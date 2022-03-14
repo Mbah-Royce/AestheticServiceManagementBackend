@@ -24,6 +24,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.controller.ServicesController.class);
         resources.add(com.controller.UserController.class);
         resources.add(com.controller.VerifyOtpController.class);
+        resources.add(com.controller.VisitorController.class);
         resources.add(com.middleware.BearerTokenFilter.class);
         resources.add(com.restful.GenericResource.class);
     }

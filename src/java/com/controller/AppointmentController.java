@@ -141,14 +141,20 @@ public class AppointmentController {
     @Path("user/appointment")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@HeaderParam("AUTHORIZATION") String token, AppointmentModel appointment) {
-        int apptnid = Integer.parseInt(UserInfo.getUserId(token));
-        System.out.println(apptnid);
+        int userId = Integer.parseInt(UserInfo.getUserId(token));
+        System.out.println(userId);
         JsonObject json = null;
-        String sqlStmt = "select * from appointments where userid = ?";
+        String sqlStmt = "select appointments.*, sessions.sessionname, categories.categoryname, services.servicename\n"
+                + "from appointments\n"
+                + "JOIN sessions on appointments.sessionid = sessions.sessionid\n"
+                + "JOIN categories on sessions.categoryid = categories.categoryid\n"
+                + "JOIN services on categories.serviceid = services.serviceid\n"
+                + "where appointments.userid=?\n"
+                + "order by appointments.appointmentdate;";
         try {
             Connection con = com.connexion.Dbconnexion.seconnecter();
             PreparedStatement pstm = con.prepareStatement(sqlStmt);
-            pstm.setInt(1, 100);
+            pstm.setInt(1, userId);
             ResultSet res = pstm.executeQuery();
             System.out.println(res.isBeforeFirst());
             if (res.isBeforeFirst()) {
@@ -161,6 +167,9 @@ public class AppointmentController {
                             .add("appointmentstatus", res.getString("appointmentstatus"))
                             .add("appointmentcreateat", res.getString("appointmentcreateat"))
                             .add("appointmentupdateat", res.getString("appointmentupdateat"))
+                            .add("sessionname", res.getString("sessionname"))
+                            .add("categoryname", res.getString("categoryname"))
+                            .add("servicename", res.getString("servicename"))
                             .add("ispaid", res.getBoolean("ispaid"))
                             .build();
                 }

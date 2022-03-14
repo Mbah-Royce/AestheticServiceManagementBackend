@@ -71,7 +71,16 @@ public class RegistrationController {
                 String number = generateOtp();
                 com.connexion.RedisConnecxion.redisConnect().set(user.getEmail(), number);
                 com.funcservices.Mailer.send("from@gmail.com", user.getEmail(), "Registration Code", "Your OTP veficication code is " +number);
-                json = Json.createObjectBuilder().add("message", "User Registerd successfully, Please input opt code send to email " + user.getEmail()).build();
+                selectStm = "select * from users where email =?";
+                pstmt = com.connexion.Dbconnexion.seconnecter().prepareStatement(selectStm);
+                pstmt.setString(1, user.getEmail());
+                rs = pstmt.executeQuery();
+                rs.next();
+                json = Json.createObjectBuilder()
+                        .add("name", user.getFirstname()+" "+user.getLastname())
+                        .add("email",user.getEmail())
+                        .add("userid", rs.getString("userid"))
+                        .build();
                 statusCode = 201;
             } else {
                 json = Json.createObjectBuilder().add("error", "Emial already taken").build();

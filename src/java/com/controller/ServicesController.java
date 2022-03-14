@@ -36,7 +36,6 @@ public class ServicesController {
     @Path("service")
     @Produces(MediaType.APPLICATION_JSON)
     public Response index() {
-        System.out.println("i am");
         int statusCode = 200;
         JsonObject json;
         JsonArrayBuilder builder = Json.createArrayBuilder();

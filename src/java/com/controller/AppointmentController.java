@@ -142,6 +142,8 @@ public class AppointmentController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@HeaderParam("AUTHORIZATION") String token, AppointmentModel appointment) {
         int userId = Integer.parseInt(UserInfo.getUserId(token));
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+
         System.out.println(userId);
         JsonObject json = null;
         String sqlStmt = "select appointments.*, sessions.sessionname, categories.categoryname, services.servicename\n"
@@ -172,6 +174,8 @@ public class AppointmentController {
                             .add("servicename", res.getString("servicename"))
                             .add("ispaid", res.getBoolean("ispaid"))
                             .build();
+                    builder.add(json);
+
                 }
             } else {
                 return Response.status(Response.Status.NO_CONTENT).build();
@@ -181,7 +185,7 @@ public class AppointmentController {
             json = Json.createObjectBuilder().add("error", "An error occured " + e.getMessage()).build();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(json.toString()).build();
         }
-        return Response.status(Response.Status.OK).entity(json.toString()).build();
+        return Response.status(Response.Status.OK).entity(builder.build().toString()).build();
     }
 
     @PUT

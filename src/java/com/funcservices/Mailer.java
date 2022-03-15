@@ -47,7 +47,7 @@ public class Mailer {
         //compose message    
         try {
             MimeMessage message = new MimeMessage(session);
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress("alemchu123@yahoo.com"));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject(sub);
             message.setText(msg);
             //send message  
